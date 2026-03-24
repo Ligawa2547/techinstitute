@@ -8,7 +8,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Chrome } from 'lucide-react'
+
 
 const COUNTRIES = [
   'Kenya', 'Uganda', 'Tanzania', 'Rwanda', 'Ethiopia', 'Ghana', 'Nigeria',
@@ -163,7 +163,7 @@ export default function RegisterPageClient() {
             onClick={handleGoogleSignUp}
             disabled={googleLoading}
           >
-            <Chrome className="h-4 w-4" />
+            <Image src="/google-logo.png" alt="Google" width={20} height={20} />
             {googleLoading ? 'Signing up…' : 'Sign up with Google'}
           </Button>
           <p className="mt-6 text-center text-sm text-muted-foreground">

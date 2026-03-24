@@ -8,7 +8,6 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Chrome } from 'lucide-react'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -94,7 +93,7 @@ export default function LoginPage() {
             onClick={handleGoogleLogin}
             disabled={googleLoading}
           >
-            <Chrome className="h-4 w-4" />
+            <Image src="/google-logo.png" alt="Google" width={20} height={20} />
             {googleLoading ? 'Signing in…' : 'Sign in with Google'}
           </Button>
           <p className="mt-6 text-center text-sm text-muted-foreground">
