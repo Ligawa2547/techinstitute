@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Chrome } from 'lucide-react'
 
 const COUNTRIES = [
   'Kenya', 'Uganda', 'Tanzania', 'Rwanda', 'Ethiopia', 'Ghana', 'Nigeria',
@@ -16,6 +17,7 @@ const COUNTRIES = [
 ]
 
 export default function RegisterPageClient() {
+  const router = useRouter()
   const searchParams = useSearchParams()
   const programId = searchParams.get('program')
 
@@ -26,6 +28,7 @@ export default function RegisterPageClient() {
   const [country, setCountry] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
   const [success, setSuccess] = useState(false)
 
   async function handleRegister(e: React.FormEvent) {
@@ -51,6 +54,25 @@ export default function RegisterPageClient() {
       return
     }
     setSuccess(true)
+  }
+
+  async function handleGoogleSignUp() {
+    setError('')
+    setGoogleLoading(true)
+    const supabase = createClient()
+    const redirectTo = typeof window !== 'undefined'
+      ? `${window.location.origin}/auth/callback${programId ? `?program=${programId}` : ''}`
+      : '/auth/callback'
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo,
+      },
+    })
+    if (error) {
+      setError(error.message)
+      setGoogleLoading(false)
+    }
   }
 
   if (success) {
@@ -129,6 +151,21 @@ export default function RegisterPageClient() {
               {loading ? 'Creating account…' : 'Create Account'}
             </Button>
           </form>
+          <div className="my-6 flex items-center gap-3">
+            <div className="h-px flex-1 bg-border"></div>
+            <span className="text-xs text-muted-foreground">Or continue with</span>
+            <div className="h-px flex-1 bg-border"></div>
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full flex items-center justify-center gap-2"
+            onClick={handleGoogleSignUp}
+            disabled={googleLoading}
+          >
+            <Chrome className="h-4 w-4" />
+            {googleLoading ? 'Signing up…' : 'Sign up with Google'}
+          </Button>
           <p className="mt-6 text-center text-sm text-muted-foreground">
             Already have an account?{' '}
             <Link href="/auth/login" className="font-medium text-primary hover:underline">Sign in</Link>
