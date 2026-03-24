@@ -48,12 +48,12 @@ export async function GET(
     doc.setFont('times', 'bold')
     doc.setFontSize(28)
     doc.setTextColor(184, 134, 11)
-    doc.text('IICAR', pageWidth / 2, 35, { align: 'center' })
+    doc.text('Ratego', pageWidth / 2, 35, { align: 'center' })
 
     doc.setFont('times', 'normal')
     doc.setFontSize(12)
     doc.setTextColor(80, 80, 80)
-    doc.text('International Institute for Certified Administrative Resources', pageWidth / 2, 42, { align: 'center' })
+    doc.text('Ratego Institute of Technology', pageWidth / 2, 42, { align: 'center' })
 
     // Certificate title
     doc.setFont('times', 'bold')
@@ -142,7 +142,7 @@ export async function GET(
     doc.setFont('times', 'normal')
     doc.setFontSize(9)
     doc.setTextColor(50, 50, 50)
-    doc.text('Principal, IICAR', pageWidth - 45, 175, { align: 'center' })
+    doc.text('Principal, Ratego Institute', pageWidth - 45, 175, { align: 'center' })
 
     // Generate PDF buffer
     const pdfBuffer = Buffer.from(doc.output('arraybuffer'))

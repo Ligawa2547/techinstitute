@@ -9,10 +9,10 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swa
 const lato = Lato({ subsets: ['latin'], weight: ['400', '700', '900'], variable: '--font-body', display: 'swap' })
 
 export const metadata: Metadata = {
-  title: 'IICAR Global College – Professional Certification',
+  title: 'Ratego Institute of Technology – Professional Education',
   description:
-    'Institute of International Career Advancement and Recognition — self-paced professional certification programs recognised globally.',
-  icons: { icon: '/logo.jpg', apple: '/logo.jpg' },
+    'Ratego Institute of Technology — innovative professional education and certification programs recognised globally.',
+  icons: { icon: '/logo.png', apple: '/logo.png' },
 }
 
 export const viewport: Viewport = {

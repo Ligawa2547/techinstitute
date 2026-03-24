@@ -86,7 +86,7 @@ export async function initiateSTKPush(params: StkPushParams): Promise<StkPushRes
       'Content-Type':  'application/json',
       'Accept':        'application/json',
       'Authorization': `Bearer ${token}`,
-      'User-Agent':    'IICAR/1.0 NextJS',
+      'User-Agent':    'Ratego/1.0 NextJS',
     },
     body: JSON.stringify(body),
   })
@@ -112,7 +112,7 @@ export async function getSTKPushStatus(location: string): Promise<{
     headers: {
       'Accept':        'application/json',
       'Authorization': `Bearer ${token}`,
-      'User-Agent':    'IICAR/1.0 NextJS',
+      'User-Agent':    'Ratego/1.0 NextJS',
     },
   })
 

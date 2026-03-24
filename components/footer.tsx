@@ -46,11 +46,11 @@ export function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <Image src="/logo.jpg" alt="IICAR" width={40} height={40} className="rounded-lg" />
-              <span className="font-bold text-lg">IICAR</span>
+              <Image src="/logo.png" alt="Ratego Institute of Technology" width={40} height={40} className="rounded-lg" />
+              <span className="font-bold text-lg">Ratego</span>
             </div>
             <p className="text-slate-400 text-sm">
-              International Institute for Certified Administrative Resources — Professional certification programs recognised globally.
+              Ratego Institute of Technology — Professional certification programs recognised globally.
             </p>
           </div>
 
@@ -89,7 +89,7 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-2">
                 <MailIcon className="h-4 w-4 flex-shrink-0 text-blue-400" />
-                <a href="mailto:info@iicar.org" className="text-slate-400 hover:text-white transition">info@iicar.org</a>
+                <a href="mailto:info@ratego.org" className="text-slate-400 hover:text-white transition">info@ratego.org</a>
               </li>
             </ul>
           </div>
@@ -103,7 +103,7 @@ export function Footer() {
             <a href="#" className="text-slate-400 hover:text-white transition"><Linkedin className="h-5 w-5" /></a>
             <a href="#" className="text-slate-400 hover:text-white transition"><Instagram className="h-5 w-5" /></a>
           </div>
-          <p className="text-slate-500 text-sm">© 2024 IICAR. All rights reserved.</p>
+          <p className="text-slate-500 text-sm">© 2024 Ratego Institute of Technology. All rights reserved.</p>
         </div>
       </div>
     </footer>

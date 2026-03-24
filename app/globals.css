@@ -4,7 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* IICAR brand: navy #0e1b35, gold accent #c9a84c, light backgrounds */
+  /* Ratego brand: navy #0e1b35, gold accent #c9a84c, light backgrounds */
   --background: oklch(0.98 0 0);
   --foreground: oklch(0.13 0.03 255);
   --card: oklch(1 0 0);

@@ -21,7 +21,7 @@ export default async function CertificatesPage() {
     <div className="flex flex-col gap-8">
       <div>
         <h1 className="text-2xl font-bold text-primary">My Certificates</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Your earned IICAR professional certifications</p>
+        <p className="mt-1 text-sm text-muted-foreground">Your earned Ratego professional certifications</p>
       </div>
 
       {certificates && certificates.length > 0 ? (
