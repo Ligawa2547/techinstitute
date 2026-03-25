@@ -26,10 +26,10 @@ export async function sendEnrollmentEmail(email: string, studentName: string, pr
           <div style="padding: 30px;">
             <p style="color: #333; font-size: 16px;">Dear ${studentName},</p>
             <p style="color: #555; font-size: 14px; line-height: 1.6;">
-              Congratulations on enrolling in <strong>${programTitle}</strong> at Ratego Institute of Technology.
+              Congratulations on enrolling in <strong>${programTitle}</strong> at Ratego!
             </p>
             <p style="color: #555; font-size: 14px; line-height: 1.6;">
-              You now have access to all course materials, lessons, and assessments. Log in to your dashboard to begin your learning journey.
+              You now have access to all course materials, video lessons, projects, and quizzes. Log in to your dashboard to start learning and master new skills.
             </p>
             <div style="margin: 30px 0; text-align: center;">
               <a href="https://ratego.org/dashboard" style="background-color: #184f7b; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
@@ -61,9 +61,9 @@ export async function sendExamCompletionEmail(email: string, studentName: string
   try {
     const passed = score >= 70
     await resend.emails.send({
-      from: 'noreply@iicar.org',
+      from: 'noreply@ratego.org',
       to: email,
-      subject: passed ? `Congratulations! You Passed ${programTitle}` : `Final Exam Results for ${programTitle}`,
+      subject: passed ? `Congratulations! You Completed ${programTitle}` : `Course Assessment Results for ${programTitle}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background-color: ${passed ? '#d1fae5' : '#fee2e2'}; padding: 20px; text-align: center; border-radius: 8px;">

@@ -9,9 +9,9 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swa
 const lato = Lato({ subsets: ['latin'], weight: ['400', '700', '900'], variable: '--font-body', display: 'swap' })
 
 export const metadata: Metadata = {
-  title: 'Ratego Institute of Technology – Professional Education',
+  title: 'Ratego – Skill-Based Training & Learning',
   description:
-    'Ratego Institute of Technology — innovative professional education and certification programs recognised globally.',
+    'Ratego offers practical, skill-focused training courses with live lessons, hands-on projects, and expert instruction. Master in-demand competencies at your own pace.',
   icons: { icon: '/logo.png', apple: '/logo.png' },
 }
 

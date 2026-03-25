@@ -50,7 +50,7 @@ export function Footer() {
               <span className="font-bold text-lg">Ratego</span>
             </div>
             <p className="text-slate-400 text-sm">
-              Ratego Institute of Technology — Professional certification programs recognised globally.
+              Ratego — Practical skill-based training to help you master in-demand competencies.
             </p>
           </div>
 
@@ -59,8 +59,8 @@ export function Footer() {
             <h4 className="font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm">
               <li><Link href="/" className="text-slate-400 hover:text-white transition">Home</Link></li>
-              <li><Link href="/dashboard/programs" className="text-slate-400 hover:text-white transition">Programs</Link></li>
-              <li><Link href="/verify" className="text-slate-400 hover:text-white transition">Verify Certificate</Link></li>
+              <li><Link href="/dashboard/programs" className="text-slate-400 hover:text-white transition">Courses</Link></li>
+              <li><Link href="/dashboard/progress" className="text-slate-400 hover:text-white transition">Track Progress</Link></li>
               <li><Link href="/auth/login" className="text-slate-400 hover:text-white transition">Sign In</Link></li>
             </ul>
           </div>
@@ -70,7 +70,7 @@ export function Footer() {
             <h4 className="font-semibold mb-4">Resources</h4>
             <ul className="space-y-2 text-sm">
               <li><Link href="/dashboard/certificates" className="text-slate-400 hover:text-white transition">My Certificates</Link></li>
-              <li><Link href="/dashboard" className="text-slate-400 hover:text-white transition">Dashboard</Link></li>
+              <li><Link href="/dashboard/live-lessons" className="text-slate-400 hover:text-white transition">Live Lessons</Link></li>
               <li><a href="https://median.co/share/odmyyym#apk" className="text-slate-400 hover:text-white transition">Mobile App</a></li>
             </ul>
           </div>

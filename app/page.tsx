@@ -56,10 +56,10 @@ export default async function HomePage() {
         <div className="relative mx-auto max-w-7xl px-6 py-24 md:py-32">
           <div className="mx-auto max-w-3xl text-center">
             <h1 className="text-4xl font-bold leading-tight tracking-tight text-balance md:text-5xl lg:text-6xl">
-              Advance Your Career with Globally Recognised Certifications
+              Master In-Demand Skills with Expert-Led Training
             </h1>
             <p className="mt-6 text-lg leading-relaxed text-primary-foreground/90 text-pretty">
-              Ratego Institute of Technology delivers structured, self-paced professional certification programs powered by AI-assisted academic content. Learn at your pace — earn credentials that open doors.
+              Ratego offers practical, skill-focused training programs designed to help you master real-world competencies. Learn at your own pace with live lessons, hands-on projects, and expert guidance.
             </p>
             <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold px-10">
@@ -74,10 +74,10 @@ export default async function HomePage() {
         <div className="border-t border-white/10">
           <div className="mx-auto grid max-w-7xl grid-cols-2 md:grid-cols-4">
             {[
-              { label: 'Programs Offered', value: '20+' },
-              { label: 'Students Enrolled', value: '5,000+' },
-              { label: 'Countries Reached', value: '40+' },
-              { label: 'Certificates Issued', value: '3,200+' },
+              { label: 'Courses Offered', value: '20+' },
+              { label: 'Students Learning', value: '5,000+' },
+              { label: 'Expert Instructors', value: '50+' },
+              { label: 'Skills Mastered', value: '3,200+' },
             ].map((stat) => (
               <div key={stat.label} className="flex flex-col items-center border-r border-white/10 last:border-r-0 py-8 text-center">
                 <span className="text-3xl font-bold text-accent">{stat.value}</span>
@@ -88,21 +88,21 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* WHY IICAR */}
+      {/* WHY RATEGO */}
       <section className="py-20 bg-gradient-to-b from-background to-muted/30">
         <div className="mx-auto max-w-7xl px-6">
           <div className="mb-14 text-center">
             <h2 className="text-3xl font-bold text-primary">Why Choose Ratego?</h2>
-            <p className="mt-3 text-muted-foreground">Everything you need for a recognised professional qualification</p>
+            <p className="mt-3 text-muted-foreground">Everything you need to master practical, job-ready skills</p>
           </div>
           <div className="grid gap-8 lg:grid-cols-2">
             {/* Feature Cards */}
             <div className="grid gap-8 md:grid-cols-2">
               {[
-                { icon: BookOpen, title: 'AI-Assisted Content', desc: 'Structured curriculum generated and refined with AI, reviewed by domain experts for accuracy.' },
-                { icon: Award, title: 'Verifiable Certificates', desc: 'Every certificate carries a unique ID instantly verifiable on our public portal.' },
-                { icon: Globe, title: 'Learn Anywhere', desc: 'Fully self-paced and accessible on any device from any country, 24/7.' },
-                { icon: Shield, title: 'Rigorous Standards', desc: 'Built on transparent academic standards with proctored assessments and structured grading.' },
+                { icon: BookOpen, title: 'Expert-Designed Courses', desc: 'Practical curriculum created by industry professionals, focused on real-world application.' },
+                { icon: Award, title: 'Completion Certificates', desc: 'Earn certificates recognizing the skills you\'ve mastered, perfect for your portfolio.' },
+                { icon: Globe, title: 'Learn Your Way', desc: 'Self-paced online learning with live sessions, accessible 24/7 from anywhere.' },
+                { icon: Shield, title: 'Hands-On Learning', desc: 'Projects, quizzes, and real-world scenarios to build practical expertise.' },
               ].map(({ icon: Icon, title, desc }) => (
                 <div key={title} className="flex flex-col gap-4 rounded-xl border border-border bg-card p-6 shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary">
@@ -121,12 +121,12 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* PROGRAMS */}
+      {/* COURSES */}
       <section id="programs" className="bg-muted/40 py-20">
         <div className="mx-auto max-w-7xl px-6">
           <div className="mb-14 text-center">
-            <h2 className="text-3xl font-bold text-primary">Professional Programs</h2>
-            <p className="mt-3 text-muted-foreground">Industry-aligned certifications built for working professionals</p>
+            <h2 className="text-3xl font-bold text-primary">Our Courses</h2>
+            <p className="mt-3 text-muted-foreground">Skill-focused courses designed for practical learning and real-world application</p>
           </div>
           {programs && programs.length > 0 ? (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
