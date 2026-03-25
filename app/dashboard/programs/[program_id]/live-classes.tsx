@@ -11,8 +11,12 @@ interface LiveClass {
   title: string;
   description: string;
   scheduled_at: string;
-  meet_link: string;
+  meet_link?: string;
+  youtube_url?: string;
   is_active: boolean;
+  module_id?: string;
+  programs?: { title: string };
+  modules?: { title: string };
   profiles: { full_name: string };
 }
 
@@ -21,14 +25,19 @@ interface LiveClassesProps {
 }
 
 export function LiveClasses({ programId }: LiveClassesProps) {
-  const { user, token } = useAuth();
+  const { user, token, loading: authLoading } = useAuth();
   const [liveClasses, setLiveClasses] = useState<LiveClass[]>([]);
   const [loading, setLoading] = useState(true);
   const [joiningId, setJoiningId] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!token || authLoading) return;
+    if (!user && !authLoading) {
+      window.location.href = '/auth/login';
+      return;
+    }
     fetchLiveClasses();
-  }, [programId, token]);
+  }, [programId, token, user, authLoading]);
 
   const fetchLiveClasses = async () => {
     try {
@@ -118,16 +127,29 @@ export function LiveClasses({ programId }: LiveClassesProps) {
                     )}
                   </div>
                 </div>
-                {liveClass.meet_link && (
-                  <Button
-                    onClick={() => handleJoinClass(liveClass.id)}
-                    disabled={joiningId === liveClass.id}
-                    className="gap-2 whitespace-nowrap"
-                  >
-                    <Video className="h-4 w-4" />
-                    {joiningId === liveClass.id ? 'Joining...' : 'Join Now'}
-                  </Button>
-                )}
+                <div className="flex flex-col gap-2">
+                  {liveClass.meet_link && (
+                    <Button
+                      onClick={() => handleJoinClass(liveClass.id)}
+                      disabled={joiningId === liveClass.id}
+                      className="gap-2 whitespace-nowrap"
+                    >
+                      <Video className="h-4 w-4" />
+                      {joiningId === liveClass.id ? 'Joining...' : 'Join via Meet'}
+                    </Button>
+                  )}
+                  {liveClass.youtube_url && (
+                    <Button
+                      variant="outline"
+                      asChild
+                      className="gap-2 whitespace-nowrap"
+                    >
+                      <a href={liveClass.youtube_url} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="h-4 w-4" /> Watch on YouTube
+                      </a>
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           );

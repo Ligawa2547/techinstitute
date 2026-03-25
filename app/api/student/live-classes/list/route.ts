@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
     // Get all active live classes for this program
     const { data, error } = await supabase
       .from('live_classes')
-      .select('*, profiles(full_name)')
+      .select('*, profiles(full_name), modules(title)')
       .eq('program_id', programId)
       .eq('is_active', true)
       .order('scheduled_at', { ascending: true });

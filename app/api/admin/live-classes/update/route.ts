@@ -8,7 +8,7 @@ const supabase = createClient(
 
 export async function PUT(request: NextRequest) {
   try {
-    const { id, title, description, scheduled_at, meet_link, is_active } = await request.json();
+    const { id, title, description, program_id, module_id, scheduled_at, meet_link, youtube_url, is_active } = await request.json();
 
     if (!id) {
       return NextResponse.json({ error: 'Missing live class ID' }, { status: 400 });
@@ -48,14 +48,30 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'You can only update your own live classes' }, { status: 403 });
     }
 
+    // Validate module belongs to program
+    if (module_id && program_id) {
+      const { data: moduleCheck, error: moduleError } = await supabase
+        .from('modules')
+        .select('program_id')
+        .eq('id', module_id)
+        .single();
+
+      if (moduleError || !moduleCheck || moduleCheck.program_id !== program_id) {
+        return NextResponse.json({ error: 'Module must belong to selected program' }, { status: 400 });
+      }
+    }
+
     // Update the live class
     const { data, error } = await supabase
       .from('live_classes')
       .update({
         title,
         description,
+        program_id,
+        module_id: module_id || null,
         scheduled_at,
         meet_link: meet_link || null,
+        youtube_url: youtube_url || null,
         is_active,
         updated_at: new Date().toISOString(),
       })

@@ -21,6 +21,42 @@ export default function CalendarPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [selectedMonth, setSelectedMonth] = useState(new Date())
+  const [viewMode, setViewMode] = useState<'month' | 'term' | 'session'>('month')
+
+  const getRange = (base: Date) => {
+    if (viewMode === 'term') {
+      const termStart = new Date(base.getFullYear(), Math.floor(base.getMonth() / 3) * 3, 1)
+      return {
+        start: termStart,
+        end: new Date(termStart.getFullYear(), termStart.getMonth() + 3, 1),
+      }
+    }
+
+    if (viewMode === 'session') {
+      const sessionStart = new Date(base.getFullYear(), 0, 1)
+      return {
+        start: sessionStart,
+        end: new Date(sessionStart.getFullYear() + 1, 0, 1),
+      }
+    }
+
+    // month
+    return {
+      start: new Date(base.getFullYear(), base.getMonth(), 1),
+      end: new Date(base.getFullYear(), base.getMonth() + 1, 1),
+    }
+  }
+
+  const getGoogleCalendarUrl = (event: CalendarEvent) => {
+    const start = new Date(event.start_time)
+    const end = event.end_time ? new Date(event.end_time) : new Date(new Date(event.start_time).getTime() + 60 * 60 * 1000)
+    const formatDt = (d: Date) => d.toISOString().replace(/[-:.]/g, '').slice(0, 15) + 'Z'
+    const title = encodeURIComponent(event.title)
+    const details = encodeURIComponent(event.description || '')
+    const location = encodeURIComponent(event.location_or_link || '')
+
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${formatDt(start)}/${formatDt(end)}&details=${details}&location=${location}&sprop=&sprop=name:`
+  }
 
   useEffect(() => {
     fetchEvents()
@@ -43,18 +79,50 @@ export default function CalendarPage() {
       }
 
       const programIds = enrollments.map((e) => e.program_id)
+      const range = getRange(selectedMonth)
 
       // Get calendar events for enrolled programs
-      const { data, error: err } = await supabase
+      const { data: calendarData, error: calendarError } = await supabase
         .from('calendar_events')
         .select('*')
         .in('program_id', programIds)
-        .gte('start_time', new Date(selectedMonth.getFullYear(), selectedMonth.getMonth(), 1).toISOString())
-        .lt('start_time', new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() + 1, 1).toISOString())
+        .gte('start_time', range.start.toISOString())
+        .lt('start_time', range.end.toISOString())
         .order('start_time', { ascending: true })
 
-      if (err) throw err
-      setEvents(data || [])
+      if (calendarError) throw calendarError
+
+      // Also include scheduled live classes
+      const { data: liveClassesData, error: liveError } = await supabase
+        .from('live_classes')
+        .select('id, title, description, scheduled_at, meet_link, youtube_url, program_id, programs(title), modules(title)')
+        .in('program_id', programIds)
+        .gte('scheduled_at', range.start.toISOString())
+        .lt('scheduled_at', range.end.toISOString())
+        .eq('is_active', true)
+        .order('scheduled_at', { ascending: true })
+
+      if (liveError) throw liveError
+
+      const liveEvents = (liveClassesData || []).map((item: any) => ({
+        id: item.id,
+        title: `${item.title} (${item.programs?.title || 'Program'})`,
+        description: item.description || '',
+        start_time: item.scheduled_at,
+        end_time: new Date(new Date(item.scheduled_at).getTime() + 60 * 60 * 1000).toISOString(),
+        location_or_link: item.youtube_url || item.meet_link || '',
+        program_id: item.program_id,
+        event_type: 'live_class',
+        google_link: item.youtube_url || item.meet_link || '',
+        module_title: item.modules?.title,
+      }))
+
+      const composedEvents = [
+        ...(calendarData || []).map((ev: any) => ({ ...ev, event_type: ev.event_type || 'calendar' })),
+        ...liveEvents,
+      ]
+
+      setEvents(composedEvents)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load calendar events')
     } finally {

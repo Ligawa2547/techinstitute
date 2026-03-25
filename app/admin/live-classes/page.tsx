@@ -15,13 +15,18 @@ interface LiveClass {
   scheduled_at: string;
   meet_link: string;
   is_active: boolean;
+  module_id?: string;
   programs: { title: string };
+  modules?: { title: string };
+  youtube_url?: string;
 }
 
 export default function LiveClassesPage() {
   const router = useRouter();
-  const { user, token } = useAuth();
+  const { user, token, loading: authLoading } = useAuth();
   const [liveClasses, setLiveClasses] = useState<LiveClass[]>([]);
+  const [programs, setPrograms] = useState<{ id: string; title: string }[]>([]);
+  const [modules, setModules] = useState<{ id: string; title: string; program_id: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -29,19 +34,49 @@ export default function LiveClassesPage() {
     title: '',
     description: '',
     program_id: '',
+    module_id: '',
     scheduled_at: '',
     meet_link: '',
+    youtube_url: '',
   });
 
   useEffect(() => {
+    if (authLoading) return;
     if (!user) {
       router.push('/auth/login');
       return;
     }
-    fetchLiveClasses();
-  }, [user, router]);
+
+    const initData = async () => {
+      await Promise.all([fetchProgramsAndModules(), fetchLiveClasses()]);
+    };
+
+    initData();
+  }, [user, authLoading, router]);
+
+  const fetchProgramsAndModules = async () => {
+    try {
+      const supabase = (await import('@/lib/supabase/client')).createClient();
+
+      const [{ data: programData, error: programError }, { data: moduleData, error: moduleError }] =
+        await Promise.all([
+          supabase.from('programs').select('id, title').order('title', { ascending: true }),
+          supabase.from('modules').select('id, title, program_id').order('sort_order', { ascending: true }),
+        ]);
+
+      if (programError) throw programError;
+      if (moduleError) throw moduleError;
+
+      setPrograms(programData || []);
+      setModules(moduleData || []);
+    } catch (error) {
+      console.error('Error fetching programs/modules:', error);
+    }
+  };
 
   const fetchLiveClasses = async () => {
+    if (!token) return;
+
     try {
       setLoading(true);
       const response = await fetch('/api/admin/live-classes/list', {
@@ -64,7 +99,7 @@ export default function LiveClassesPage() {
         ? '/api/admin/live-classes/update'
         : '/api/admin/live-classes/create';
       
-      const payload = editingId 
+      const payload = editingId
         ? { ...formData, id: editingId }
         : formData;
 
@@ -74,7 +109,11 @@ export default function LiveClassesPage() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          ...payload,
+          module_id: formData.module_id || null,
+          youtube_url: formData.youtube_url || null,
+        }),
       });
 
       if (!response.ok) throw new Error('Failed to save live class');
@@ -83,8 +122,10 @@ export default function LiveClassesPage() {
         title: '',
         description: '',
         program_id: '',
+        module_id: '',
         scheduled_at: '',
         meet_link: '',
+        youtube_url: '',
       });
       setEditingId(null);
       setShowForm(false);
@@ -120,8 +161,10 @@ export default function LiveClassesPage() {
       title: liveClass.title,
       description: liveClass.description || '',
       program_id: liveClass.program_id,
+      module_id: liveClass.module_id || '',
       scheduled_at: liveClass.scheduled_at.slice(0, 16),
       meet_link: liveClass.meet_link || '',
+      youtube_url: liveClass.youtube_url || '',
     });
     setShowForm(true);
   };
@@ -169,13 +212,38 @@ export default function LiveClassesPage() {
               <select
                 required
                 value={formData.program_id}
-                onChange={(e) => setFormData({ ...formData, program_id: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, program_id: e.target.value, module_id: '' })}
                 className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
               >
                 <option value="">Select a program</option>
-                {/* Programs will be fetched and populated here */}
+                {programs.map((program) => (
+                  <option key={program.id} value={program.id}>
+                    {program.title}
+                  </option>
+                ))}
               </select>
             </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Module/Topic *</label>
+              <select
+                required
+                value={formData.module_id}
+                onChange={(e) => setFormData({ ...formData, module_id: e.target.value })}
+                className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
+                disabled={!formData.program_id}
+              >
+                <option value="">Select a module/topic</option>
+                {modules
+                  .filter((module) => module.program_id === formData.program_id)
+                  .map((module) => (
+                    <option key={module.id} value={module.id}>
+                      {module.title}
+                    </option>
+                  ))}
+              </select>
+            </div>
+
             <div>
               <label className="block text-sm font-medium mb-1">Scheduled Date & Time *</label>
               <input
@@ -194,6 +262,16 @@ export default function LiveClassesPage() {
                 onChange={(e) => setFormData({ ...formData, meet_link: e.target.value })}
                 className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
                 placeholder="https://meet.google.com/..."
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">YouTube Video URL</label>
+              <input
+                type="url"
+                value={formData.youtube_url}
+                onChange={(e) => setFormData({ ...formData, youtube_url: e.target.value })}
+                className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
+                placeholder="https://www.youtube.com/watch?v=..."
               />
             </div>
             <div className="flex gap-2">
@@ -234,12 +312,25 @@ export default function LiveClassesPage() {
                       <BookOpen className="h-4 w-4" />
                       {liveClass.programs?.title}
                     </span>
+                    {liveClass.modules?.title && (
+                      <span className="flex items-center gap-1">
+                        <Video className="h-4 w-4" />
+                        {liveClass.modules.title}
+                      </span>
+                    )}
                   </div>
-                  {liveClass.meet_link && (
-                    <div className="mt-2">
-                      <a href={liveClass.meet_link} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">
-                        Google Meet Link
-                      </a>
+                  {(liveClass.meet_link || liveClass.youtube_url) && (
+                    <div className="mt-2 space-y-1">
+                      {liveClass.meet_link && (
+                        <a href={liveClass.meet_link} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline block">
+                          Google Meet Link
+                        </a>
+                      )}
+                      {liveClass.youtube_url && (
+                        <a href={liveClass.youtube_url} target="_blank" rel="noopener noreferrer" className="text-sm text-red-600 hover:underline block">
+                          YouTube Video Link
+                        </a>
+                      )}
                     </div>
                   )}
                 </div>

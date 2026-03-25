@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
 
     let query = supabase
       .from('live_classes')
-      .select('*, programs(title), profiles(full_name)')
+      .select('*, programs(title), modules(title), profiles(full_name)')
       .order('scheduled_at', { ascending: true });
 
     if (programId) {

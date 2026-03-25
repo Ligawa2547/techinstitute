@@ -11,10 +11,12 @@ interface LiveClass {
   description: string
   scheduled_at: string
   meet_link?: string
+  youtube_url?: string
   google_meet_url?: string
   is_active: boolean
   program_id: string
   program_title?: string
+  module_title?: string
   status?: string
 }
 
@@ -51,7 +53,7 @@ export default function LiveLessonsPage() {
 
       let query = supabase
         .from('live_classes')
-        .select(`id, title, description, scheduled_at, meet_link, google_meet_url, is_active, status, program_id, programs(title)`)
+        .select(`id, title, description, scheduled_at, meet_link, youtube_url, google_meet_url, is_active, status, program_id, programs(title), modules(title)`)
         .in('program_id', programIds)
 
       if (filter === 'upcoming') {
@@ -69,6 +71,7 @@ export default function LiveLessonsPage() {
       const formattedData = data?.map((item: any) => ({
         ...item,
         program_title: item.programs?.title || 'Unknown Program',
+        module_title: item.modules?.title || '',
       })) || []
 
       setClasses(formattedData)
@@ -119,9 +122,31 @@ export default function LiveLessonsPage() {
   const upcomingCount = classes.filter((c) => new Date(c.scheduled_at) > new Date()).length
   const pastCount = classes.filter((c) => new Date(c.scheduled_at) <= new Date()).length
 
-  // Extract meet URL
+  // Extract meet URL or YouTube embed URL
+  const formatYoutubeEmbedUrl = (url: string) => {
+    try {
+      const parsed = new URL(url)
+      const videoId = parsed.searchParams.get('v')
+      if (videoId) return `https://www.youtube.com/embed/${videoId}`
+      // Support youtu.be short link
+      if (parsed.hostname.includes('youtu.be')) {
+        const id = parsed.pathname.slice(1)
+        if (id) return `https://www.youtube.com/embed/${id}`
+      }
+    } catch (err) {
+      return ''
+    }
+    return ''
+  }
+
   const getMeetUrl = (liveClass: LiveClass) => {
     return liveClass.google_meet_url || liveClass.meet_link
+  }
+
+  const getVideoUrl = (liveClass: LiveClass) => {
+    if (!liveClass.youtube_url) return null
+    const embedUrl = formatYoutubeEmbedUrl(liveClass.youtube_url)
+    return embedUrl || liveClass.youtube_url
   }
 
   return (
@@ -143,16 +168,16 @@ export default function LiveLessonsPage() {
               </button>
             </div>
             <div className="flex-1 overflow-hidden bg-black">
-              {getMeetUrl(selectedClass) ? (
+              {getVideoUrl(selectedClass) || getMeetUrl(selectedClass) ? (
                 <iframe
-                  src={getMeetUrl(selectedClass)}
+                  src={getVideoUrl(selectedClass) || getMeetUrl(selectedClass)}
                   className="w-full h-full border-0"
                   allow="camera;microphone;picture-in-picture"
                   allowFullScreen
                 />
               ) : (
                 <div className="flex items-center justify-center h-full">
-                  <p className="text-muted-foreground">No Google Meet link available</p>
+                  <p className="text-muted-foreground">No Google Meet or YouTube link available</p>
                 </div>
               )}
             </div>
@@ -232,7 +257,7 @@ export default function LiveLessonsPage() {
 
                 <div className="p-5 space-y-4">
                   <div>
-                    <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">{liveClass.program_title}</p>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">{liveClass.program_title}{liveClass.module_title ? ` · ${liveClass.module_title}` : ''}</p>
                     <h3 className="text-lg font-semibold text-foreground line-clamp-2">{liveClass.title}</h3>
                     {liveClass.description && <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{liveClass.description}</p>}
                   </div>

@@ -8,7 +8,7 @@ const supabase = createClient(
 
 export async function POST(request: NextRequest) {
   try {
-    const { title, description, program_id, scheduled_at, meet_link } = await request.json();
+    const { title, description, program_id, module_id, scheduled_at, meet_link, youtube_url } = await request.json();
 
     // Get the user from the request
     const authHeader = request.headers.get('Authorization');
@@ -35,6 +35,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Only admins can create live classes' }, { status: 403 });
     }
 
+    // Validate module belongs to program
+    if (module_id) {
+      const { data: moduleCheck, error: moduleError } = await supabase
+        .from('modules')
+        .select('program_id')
+        .eq('id', module_id)
+        .single();
+
+      if (moduleError || !moduleCheck || moduleCheck.program_id !== program_id) {
+        return NextResponse.json({ error: 'Module must belong to selected program' }, { status: 400 });
+      }
+    }
+
     // Create the live class
     const { data, error } = await supabase
       .from('live_classes')
@@ -42,8 +55,10 @@ export async function POST(request: NextRequest) {
         title,
         description,
         program_id,
+        module_id: module_id || null,
         scheduled_at,
         meet_link: meet_link || null,
+        youtube_url: youtube_url || null,
         created_by: user.id,
         is_active: true,
       })
