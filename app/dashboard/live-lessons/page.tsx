@@ -10,10 +10,12 @@ interface LiveClass {
   title: string
   description: string
   scheduled_at: string
-  meet_link: string
+  meet_link?: string
+  google_meet_url?: string
   is_active: boolean
   program_id: string
   program_title?: string
+  status?: string
 }
 
 export default function LiveLessonsPage() {
@@ -21,6 +23,8 @@ export default function LiveLessonsPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [filter, setFilter] = useState<'upcoming' | 'past' | 'all'>('upcoming')
+  const [selectedClass, setSelectedClass] = useState<LiveClass | null>(null)
+  const [joinedClasses, setJoinedClasses] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     fetchLiveClasses()
@@ -47,7 +51,7 @@ export default function LiveLessonsPage() {
 
       let query = supabase
         .from('live_classes')
-        .select(`id, title, description, scheduled_at, meet_link, is_active, program_id, programs(title)`)
+        .select(`id, title, description, scheduled_at, meet_link, google_meet_url, is_active, status, program_id, programs(title)`)
         .in('program_id', programIds)
 
       if (filter === 'upcoming') {
@@ -93,11 +97,69 @@ export default function LiveLessonsPage() {
     return { text: 'Upcoming', color: 'bg-primary text-primary-foreground' }
   }
 
+  const handleJoinClass = async (liveClass: LiveClass) => {
+    setSelectedClass(liveClass)
+    
+    // Record attendance
+    try {
+      await fetch('/api/lessons/attendance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          live_class_id: liveClass.id,
+          joined_at: new Date().toISOString()
+        })
+      })
+      setJoinedClasses(new Set([...joinedClasses, liveClass.id]))
+    } catch (err) {
+      console.error('Failed to record attendance:', err)
+    }
+  }
+
   const upcomingCount = classes.filter((c) => new Date(c.scheduled_at) > new Date()).length
   const pastCount = classes.filter((c) => new Date(c.scheduled_at) <= new Date()).length
 
+  // Extract meet URL
+  const getMeetUrl = (liveClass: LiveClass) => {
+    return liveClass.google_meet_url || liveClass.meet_link
+  }
+
   return (
     <div className="space-y-6">
+      {/* Google Meet Modal */}
+      {selectedClass && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-background rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <div>
+                <h2 className="text-lg font-semibold text-foreground">{selectedClass.title}</h2>
+                <p className="text-xs text-muted-foreground">{selectedClass.program_title}</p>
+              </div>
+              <button
+                onClick={() => setSelectedClass(null)}
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="flex-1 overflow-hidden bg-black">
+              {getMeetUrl(selectedClass) ? (
+                <iframe
+                  src={getMeetUrl(selectedClass)}
+                  className="w-full h-full border-0"
+                  allow="camera;microphone;picture-in-picture"
+                  allowFullScreen
+                />
+              ) : (
+                <div className="flex items-center justify-center h-full">
+                  <p className="text-muted-foreground">No Google Meet link available</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       <div>
         <h1 className="text-3xl font-bold text-foreground">Live Lessons</h1>
         <p className="mt-1 text-sm text-muted-foreground">Join live classes with your instructors</p>
@@ -180,17 +242,18 @@ export default function LiveLessonsPage() {
                     {classTime.toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                   </div>
 
-                  {isLive && liveClass.meet_link ? (
-                    <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90" asChild>
-                      <a href={liveClass.meet_link} target="_blank" rel="noopener noreferrer">
-                        <Video className="h-4 w-4 mr-2" /> Join Live Class
-                      </a>
+                  {isLive && (liveClass.google_meet_url || liveClass.meet_link) ? (
+                    <Button 
+                      className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+                      onClick={() => handleJoinClass(liveClass)}
+                    >
+                      <Video className="h-4 w-4 mr-2" /> Join Live Class
                     </Button>
-                  ) : liveClass.meet_link && new Date(liveClass.scheduled_at) > new Date() ? (
+                  ) : (liveClass.google_meet_url || liveClass.meet_link) && new Date(liveClass.scheduled_at) > new Date() ? (
                     <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90" disabled>
                       <Clock className="h-4 w-4 mr-2" /> Class Not Started
                     </Button>
-                  ) : !liveClass.meet_link ? (
+                  ) : !(liveClass.google_meet_url || liveClass.meet_link) ? (
                     <Button className="w-full" variant="outline" disabled>
                       <AlertCircle className="h-4 w-4 mr-2" /> No Link Available
                     </Button>
