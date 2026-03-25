@@ -2,7 +2,7 @@ import { createClient, createAdminClient } from '@/lib/supabase/server'
 import Image from 'next/image'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { LayoutDashboard, BookOpen, Users, Award, LogOut, ChevronRight } from 'lucide-react'
+import { LayoutDashboard, BookOpen, Users, Award, LogOut, ChevronRight, Video, Calendar, Bell, BarChart3 } from 'lucide-react'
 import { AdminMobileNav } from '@/components/admin-mobile-nav'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -23,6 +23,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const navItems = [
     { href: '/admin', icon: LayoutDashboard, label: 'Overview' },
     { href: '/admin/programs', icon: BookOpen, label: 'Programs' },
+    { href: '/admin/calendar', icon: Calendar, label: 'Calendar' },
+    { href: '/admin/live-classes', icon: Video, label: 'Live Classes' },
+    { href: '/admin/notifications', icon: Bell, label: 'Notifications' },
+    { href: '/admin/progress', icon: BarChart3, label: 'Progress' },
     { href: '/admin/students', icon: Users, label: 'Students' },
     { href: '/admin/certificates', icon: Award, label: 'Certificates' },
   ]
@@ -32,9 +36,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       {/* DESKTOP SIDEBAR */}
       <aside className="hidden md:flex fixed inset-y-0 left-0 z-40 w-64 flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border">
         <div className="flex items-center gap-3 border-b border-sidebar-border px-6 py-5">
-          <Image src="/logo.jpg" alt="IICAR" width={40} height={40} className="rounded-lg" priority />
+          <Image src="/logo.png" alt="Ratego Institute of Technology" width={40} height={40} className="rounded-lg" priority />
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-sidebar-primary">IICAR Admin</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-sidebar-primary">Ratego Admin</p>
             <p className="text-[10px] text-sidebar-foreground/40 leading-tight">Management Portal</p>
           </div>
         </div>

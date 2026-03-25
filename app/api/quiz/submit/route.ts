@@ -108,7 +108,7 @@ export async function POST(request: Request) {
 
   // If final exam passed: issue certificate + complete enrollment via admin client
   if (type === 'final_exam' && passed) {
-    const certId = `IICAR-${new Date().getFullYear()}-${Math.random().toString(36).substring(2, 10).toUpperCase()}`
+    const certId = `RIT-${new Date().getFullYear()}-${Math.random().toString(36).substring(2, 10).toUpperCase()}`
 
     await adminDb.from('certificates').upsert({
       student_id: user.id,

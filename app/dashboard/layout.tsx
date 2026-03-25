@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { LogOut, LayoutDashboard, BookOpen, Award, User } from 'lucide-react'
+import { LogOut, LayoutDashboard, BookOpen, Award, User, Calendar, Video, Bell, TrendingUp } from 'lucide-react'
 import { DashboardMobileNav } from '@/components/dashboard-mobile-nav'
 import { ThemeSelector } from '@/components/theme-selector'
 
@@ -20,6 +20,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const navItems = [
     { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { href: '/dashboard/programs', icon: BookOpen, label: 'My Programs' },
+    { href: '/dashboard/calendar', icon: Calendar, label: 'Calendar' },
+    { href: '/dashboard/live-lessons', icon: Video, label: 'Live Lessons' },
+    { href: '/dashboard/notifications', icon: Bell, label: 'Notifications' },
+    { href: '/dashboard/progress', icon: TrendingUp, label: 'My Progress' },
     { href: '/dashboard/certificates', icon: Award, label: 'Certificates' },
     { href: '/dashboard/profile', icon: User, label: 'Profile' },
   ]
@@ -29,9 +33,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
       {/* DESKTOP SIDEBAR */}
       <aside className="hidden md:flex fixed inset-y-0 left-0 z-40 w-64 flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border">
         <div className="flex items-center gap-3 border-b border-sidebar-border px-6 py-5">
-          <Image src="/logo.jpg" alt="IICAR" width={40} height={40} className="rounded-lg" priority />
+          <Image src="/logo.png" alt="Ratego Institute of Technology" width={40} height={40} className="rounded-lg" priority />
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-sidebar-primary">IICAR</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-sidebar-primary">Ratego</p>
             <p className="text-[10px] text-sidebar-foreground/40 leading-tight">Student Portal</p>
           </div>
         </div>

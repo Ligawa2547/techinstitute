@@ -19,18 +19,18 @@ export async function POST(request: Request) {
     }
 
     await resend.emails.send({
-      from: 'noreply@iicar.org',
+      from: 'noreply@ratego.org',
       to: email,
-      subject: 'Welcome to IICAR Newsletter!',
+      subject: 'Welcome to Ratego Newsletter!',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%); padding: 30px; text-align: center; border-radius: 8px; color: white;">
-            <h2 style="margin: 0; font-size: 28px;">Welcome to IICAR!</h2>
+            <h2 style="margin: 0; font-size: 28px;">Welcome to Ratego!</h2>
           </div>
           <div style="padding: 30px; background: #f8f9fa;">
             <p style="color: #333; font-size: 16px;">Hello,</p>
             <p style="color: #555; font-size: 14px; line-height: 1.6;">
-              Thank you for subscribing to IICAR's newsletter! You'll now receive updates about:
+              Thank you for subscribing to Ratego's newsletter! You'll now receive updates about:
             </p>
             <ul style="color: #555; font-size: 14px; line-height: 1.8;">
               <li>🎓 New programs and professional certifications</li>
@@ -38,10 +38,10 @@ export async function POST(request: Request) {
               <li>💡 Marketing tips and professional development content</li>
             </ul>
             <p style="color: #555; font-size: 14px; line-height: 1.6;">
-              Stay tuned for amazing opportunities to advance your career with IICAR's globally recognized certifications.
+              Stay tuned for amazing opportunities to advance your career with Ratego's globally recognized certifications.
             </p>
             <div style="margin: 30px 0; text-align: center;">
-              <a href="https://iicar.org/dashboard/programs" style="background: #1e40af; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
+              <a href="https://ratego.org/dashboard/programs" style="background: #1e40af; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
                 Explore Programs
               </a>
             </div>

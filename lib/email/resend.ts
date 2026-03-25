@@ -15,24 +15,24 @@ export async function sendEnrollmentEmail(email: string, studentName: string, pr
   
   try {
     await resend.emails.send({
-      from: 'noreply@iicar.org',
+      from: 'noreply@ratego.org',
       to: email,
-      subject: `Welcome to ${programTitle} at IICAR!`,
+      subject: `Welcome to ${programTitle} at Ratego!`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background-color: #f8f4e6; padding: 20px; text-align: center; border-radius: 8px;">
-            <h2 style="color: #1a1a1a; margin: 0;">Welcome to IICAR</h2>
+            <h2 style="color: #1a1a1a; margin: 0;">Welcome to Ratego</h2>
           </div>
           <div style="padding: 30px;">
             <p style="color: #333; font-size: 16px;">Dear ${studentName},</p>
             <p style="color: #555; font-size: 14px; line-height: 1.6;">
-              Congratulations on enrolling in <strong>${programTitle}</strong> at the International Institute for Certified Administrative Resources (IICAR).
+              Congratulations on enrolling in <strong>${programTitle}</strong> at Ratego!
             </p>
             <p style="color: #555; font-size: 14px; line-height: 1.6;">
-              You now have access to all course materials, lessons, and assessments. Log in to your dashboard to begin your learning journey.
+              You now have access to all course materials, video lessons, projects, and quizzes. Log in to your dashboard to start learning and master new skills.
             </p>
             <div style="margin: 30px 0; text-align: center;">
-              <a href="https://iicar.org/dashboard" style="background-color: #184f7b; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
+              <a href="https://ratego.org/dashboard" style="background-color: #184f7b; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
                 Go to Dashboard
               </a>
             </div>
@@ -40,7 +40,7 @@ export async function sendEnrollmentEmail(email: string, studentName: string, pr
               If you have any questions, please contact our support team.
             </p>
             <p style="color: #999; font-size: 12px; margin-top: 40px;">
-              © 2024 IICAR. All rights reserved.
+              © 2024 Ratego Institute of Technology. All rights reserved.
             </p>
           </div>
         </div>
@@ -61,9 +61,9 @@ export async function sendExamCompletionEmail(email: string, studentName: string
   try {
     const passed = score >= 70
     await resend.emails.send({
-      from: 'noreply@iicar.org',
+      from: 'noreply@ratego.org',
       to: email,
-      subject: passed ? `Congratulations! You Passed ${programTitle}` : `Final Exam Results for ${programTitle}`,
+      subject: passed ? `Congratulations! You Completed ${programTitle}` : `Course Assessment Results for ${programTitle}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background-color: ${passed ? '#d1fae5' : '#fee2e2'}; padding: 20px; text-align: center; border-radius: 8px;">
@@ -109,9 +109,9 @@ export async function sendCertificateEmail(email: string, studentName: string, p
   
   try {
     await resend.emails.send({
-      from: 'noreply@iicar.org',
+      from: 'noreply@ratego.org',
       to: email,
-      subject: `Your ${programTitle} Certificate from IICAR`,
+      subject: `Your ${programTitle} Certificate from Ratego`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background-color: #fef3c7; padding: 20px; text-align: center; border-radius: 8px;">
@@ -130,19 +130,19 @@ export async function sendCertificateEmail(email: string, studentName: string, p
                 <strong>Certificate Details:</strong><br>
                 Program: ${programTitle}<br>
                 Status: ✓ Completed<br>
-                Issuing Organization: IICAR
+                Issuing Organization: Ratego Institute of Technology
               </p>
             </div>
             <p style="color: #555; font-size: 14px; line-height: 1.6;">
               You can verify your certificate using the verification link on our website.
             </p>
             <div style="margin: 30px 0; text-align: center;">
-              <a href="https://iicar.org/dashboard/certificates" style="background-color: #184f7b; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
+              <a href="https://ratego.org/dashboard/certificates" style="background-color: #184f7b; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
                 View All Certificates
               </a>
             </div>
             <p style="color: #999; font-size: 12px; margin-top: 40px;">
-              © 2024 IICAR. All rights reserved.
+              © 2024 Ratego Institute of Technology. All rights reserved.
             </p>
           </div>
         </div>

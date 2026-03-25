@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
+
 const COUNTRIES = [
   'Kenya', 'Uganda', 'Tanzania', 'Rwanda', 'Ethiopia', 'Ghana', 'Nigeria',
   'South Africa', 'Egypt', 'United Kingdom', 'United States', 'Canada',
@@ -16,6 +17,7 @@ const COUNTRIES = [
 ]
 
 export default function RegisterPageClient() {
+  const router = useRouter()
   const searchParams = useSearchParams()
   const programId = searchParams.get('program')
 
@@ -26,6 +28,7 @@ export default function RegisterPageClient() {
   const [country, setCountry] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
   const [success, setSuccess] = useState(false)
 
   async function handleRegister(e: React.FormEvent) {
@@ -53,11 +56,30 @@ export default function RegisterPageClient() {
     setSuccess(true)
   }
 
+  async function handleGoogleSignUp() {
+    setError('')
+    setGoogleLoading(true)
+    const supabase = createClient()
+    const redirectTo = typeof window !== 'undefined'
+      ? `${window.location.origin}/auth/callback${programId ? `?program=${programId}` : ''}`
+      : '/auth/callback'
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo,
+      },
+    })
+    if (error) {
+      setError(error.message)
+      setGoogleLoading(false)
+    }
+  }
+
   if (success) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-primary px-4">
         <div className="w-full max-w-md rounded-2xl bg-card p-10 shadow-xl text-center flex flex-col items-center gap-4">
-          <Image src="/logo.jpg" alt="IICAR" width={64} height={64} className="rounded-xl" priority />
+          <Image src="/logo.png" alt="Ratego Institute of Technology" width={64} height={64} className="rounded-xl" priority />
           <h2 className="text-xl font-bold text-primary">Check Your Email</h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
             We sent a confirmation link to <strong>{email}</strong>. Please verify your email to activate your account.
@@ -75,9 +97,9 @@ export default function RegisterPageClient() {
       <div className="w-full max-w-md">
         <div className="mb-8 flex flex-col items-center gap-3 text-center">
           <Link href="/">
-            <Image src="/logo.jpg" alt="IICAR" width={72} height={72} className="rounded-xl" priority />
+            <Image src="/logo.png" alt="Ratego Institute of Technology" width={72} height={72} className="rounded-xl" priority />
           </Link>
-          <h1 className="text-xl font-bold text-primary-foreground">Create Your IICAR Account</h1>
+          <h1 className="text-xl font-bold text-primary-foreground">Create Your Ratego Account</h1>
           <p className="text-sm text-primary-foreground/60">Start your journey to professional certification</p>
         </div>
         <div className="rounded-2xl bg-card p-8 shadow-xl border border-border">
@@ -129,6 +151,21 @@ export default function RegisterPageClient() {
               {loading ? 'Creating account…' : 'Create Account'}
             </Button>
           </form>
+          <div className="my-6 flex items-center gap-3">
+            <div className="h-px flex-1 bg-border"></div>
+            <span className="text-xs text-muted-foreground">Or continue with</span>
+            <div className="h-px flex-1 bg-border"></div>
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full flex items-center justify-center gap-2"
+            onClick={handleGoogleSignUp}
+            disabled={googleLoading}
+          >
+            <Image src="/google-logo.png" alt="Google" width={20} height={20} />
+            {googleLoading ? 'Signing up…' : 'Sign up with Google'}
+          </Button>
           <p className="mt-6 text-center text-sm text-muted-foreground">
             Already have an account?{' '}
             <Link href="/auth/login" className="font-medium text-primary hover:underline">Sign in</Link>

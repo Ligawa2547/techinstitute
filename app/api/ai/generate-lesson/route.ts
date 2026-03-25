@@ -10,7 +10,7 @@ export async function POST(request: Request) {
   const { lessonTitle } = await request.json()
   if (!lessonTitle) return NextResponse.json({ error: 'Missing lessonTitle' }, { status: 400 })
 
-  const prompt = `You are an academic content writer for IICAR Global College, a professional certification institute.
+  const prompt = `You are an academic content writer for Ratego Institute of Technology, a professional certification institute.
 
 Write a comprehensive, well-structured lesson on the topic: "${lessonTitle}"
 
