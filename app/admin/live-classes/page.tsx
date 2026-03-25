@@ -56,21 +56,24 @@ export default function LiveClassesPage() {
 
   const fetchProgramsAndModules = async () => {
     try {
-      const supabase = (await import('@/lib/supabase/client')).createClient();
+      const [programResp, moduleResp] = await Promise.all([
+        fetch('/api/admin/programs/list'),
+        fetch('/api/admin/modules/list'),
+      ])
 
-      const [{ data: programData, error: programError }, { data: moduleData, error: moduleError }] =
-        await Promise.all([
-          supabase.from('programs').select('id, title').order('title', { ascending: true }),
-          supabase.from('modules').select('id, title, program_id').order('sort_order', { ascending: true }),
-        ]);
+      if (!programResp.ok || !moduleResp.ok) {
+        throw new Error('Failed to load programs/modules')
+      }
 
-      if (programError) throw programError;
-      if (moduleError) throw moduleError;
+      const programJson = await programResp.json()
+      const moduleJson = await moduleResp.json()
 
-      setPrograms(programData || []);
-      setModules(moduleData || []);
+      setPrograms(programJson.data || [])
+      setModules(moduleJson.data || [])
     } catch (error) {
-      console.error('Error fetching programs/modules:', error);
+      console.error('Error fetching programs/modules:', error)
+      setPrograms([])
+      setModules([])
     }
   };
 
