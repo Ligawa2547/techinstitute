@@ -86,7 +86,7 @@ export default function AdmissionApplicationPage() {
             email: formData.email,
             phone: formData.phone,
             program_id: formData.program_id,
-            status: 'pending'
+            status: 'pending',
           },
         ])
 
