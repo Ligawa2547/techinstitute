@@ -60,7 +60,7 @@ export default function AdmissionApplicationPage() {
 
     try {
       const supabase = createClient()
-      
+
       // Check if email already has a pending application
       const { data: existingApp } = await supabase
         .from('admission_applications')
@@ -68,7 +68,7 @@ export default function AdmissionApplicationPage() {
         .eq('email', formData.email)
         .eq('program_id', formData.program_id)
         .eq('status', 'pending')
-        .single()
+        .maybeSingle()
 
       if (existingApp) {
         setError('You already have a pending application for this program')
@@ -179,7 +179,7 @@ export default function AdmissionApplicationPage() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="john@example.com"
+                  placeholder="you@example.com"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
