@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Mail, Download, MapPin, Phone, Mail as MailIcon, Facebook, Twitter, Linkedin, Instagram } from 'lucide-react'
+import { Mail, MapPin, Phone, Mail as MailIcon, Facebook, Twitter, Linkedin, Instagram } from 'lucide-react'
 import { NewsletterSubscription } from '@/components/newsletter-subscription'
 
 export function Footer() {
@@ -19,26 +19,7 @@ export function Footer() {
         </div>
       </div>
 
-      {/* Mobile App Download Section */}
-      <div className="bg-slate-800 py-8 border-b border-slate-700">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div>
-              <h4 className="text-lg font-semibold mb-2">Download Our Mobile App</h4>
-              <p className="text-slate-300 text-sm">Access your courses and certificates on the go</p>
-            </div>
-            <a
-              href="https://median.co/share/odmyyym#apk"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-all"
-            >
-              <Download className="h-5 w-5" />
-              Download APK
-            </a>
-          </div>
-        </div>
-      </div>
+
 
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-6 py-12">
@@ -71,7 +52,7 @@ export function Footer() {
             <ul className="space-y-2 text-sm">
               <li><Link href="/dashboard/certificates" className="text-slate-400 hover:text-white transition">My Certificates</Link></li>
               <li><Link href="/dashboard/live-lessons" className="text-slate-400 hover:text-white transition">Live Lessons</Link></li>
-              <li><a href="https://median.co/share/odmyyym#apk" className="text-slate-400 hover:text-white transition">Mobile App</a></li>
+              <li><Link href="/apply" className="text-slate-400 hover:text-white transition">Apply Now</Link></li>
             </ul>
           </div>
 
@@ -85,7 +66,7 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="h-4 w-4 flex-shrink-0 text-blue-400" />
-                <a href="tel:+254" className="text-slate-400 hover:text-white transition">+254</a>
+                <a href="tel:+254734086120" className="text-slate-400 hover:text-white transition">+254 734 086 120</a>
               </li>
               <li className="flex items-center gap-2">
                 <MailIcon className="h-4 w-4 flex-shrink-0 text-blue-400" />

@@ -36,7 +36,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </Script>
         <Script
           id="zoho-siq-widget"
-          src="https://salesiq.zohopublic.com/widget?wc=siqd1a796ef77dd6088fd85fc9962bd1534"
+          src="https://salesiq.zohopublic.com/widget?wc=siq87cd60ebb7c6a6b874552fdc2baa12c7a46e7a162b36cc0933ca13341c685f77"
           defer
           strategy="afterInteractive"
         />

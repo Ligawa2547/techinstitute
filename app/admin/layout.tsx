@@ -2,7 +2,7 @@ import { createClient, createAdminClient } from '@/lib/supabase/server'
 import Image from 'next/image'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { LayoutDashboard, BookOpen, Users, Award, LogOut, ChevronRight, Video, Calendar, Bell, BarChart3 } from 'lucide-react'
+import { LayoutDashboard, BookOpen, Users, Award, LogOut, ChevronRight, Video, Calendar, Bell, BarChart3, FileText } from 'lucide-react'
 import { AdminMobileNav } from '@/components/admin-mobile-nav'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -22,6 +22,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   const navItems = [
     { href: '/admin', icon: LayoutDashboard, label: 'Overview' },
+    { href: '/admin/admissions', icon: FileText, label: 'Admissions' },
     { href: '/admin/programs', icon: BookOpen, label: 'Programs' },
     { href: '/admin/calendar', icon: Calendar, label: 'Calendar' },
     { href: '/admin/live-classes', icon: Video, label: 'Live Classes' },
