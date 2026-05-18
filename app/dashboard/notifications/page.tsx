@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Trash2, CheckCircle, AlertCircle, Info, CheckCheck } from 'lucide-react'
-import { useRealtime } from '@/hooks/use-realtime'
 
 interface Notification {
   id: string
@@ -20,21 +19,22 @@ export default function NotificationsPage() {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<'unread' | 'all'>('unread')
+  const [error, setError] = useState('')
   const supabase = createClient()
 
   useEffect(() => {
     fetchNotifications()
-    const channel = useRealtime('notifications')
-    return () => {
-      channel.unsubscribe()
-    }
-  }, [])
+  }, [filter])
 
   async function fetchNotifications() {
     try {
       setLoading(true)
+      setError('')
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
+      if (!user) {
+        setNotifications([])
+        return
+      }
 
       let query = supabase
         .from('notifications')
@@ -48,9 +48,15 @@ export default function NotificationsPage() {
 
       const { data, error } = await query
 
-      if (error) throw error
-      setNotifications(data || [])
+      if (error) {
+        setError(error.message)
+        setNotifications([])
+      } else {
+        setNotifications(data || [])
+      }
     } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to load notifications'
+      setError(message)
       console.error('Failed to load notifications:', err)
     } finally {
       setLoading(false)
@@ -162,6 +168,19 @@ export default function NotificationsPage() {
           All ({notifications.length})
         </button>
       </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
+          <div className="flex gap-3">
+            <AlertCircle className="h-5 w-5 flex-shrink-0" />
+            <div>
+              <p className="font-semibold">Error loading notifications</p>
+              <p className="text-sm">{error}</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Notifications List */}
       {loading ? (
