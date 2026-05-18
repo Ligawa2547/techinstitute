@@ -24,6 +24,16 @@ export default function AdminCalendarPage() {
   const [error, setError] = useState('')
   const [programs, setPrograms] = useState<any[]>([])
   const [selectedMonth, setSelectedMonth] = useState(new Date())
+  const [showForm, setShowForm] = useState(false)
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    event_type: 'class',
+    program_id: '',
+    start_time: '',
+    end_time: '',
+    location_or_link: '',
+  })
 
   useEffect(() => {
     fetchData()
@@ -67,6 +77,54 @@ export default function AdminCalendarPage() {
     }
   }
 
+  async function createEvent(e: React.FormEvent) {
+    e.preventDefault()
+    try {
+      if (!formData.title || !formData.program_id || !formData.start_time || !formData.end_time) {
+        setError('Please fill in all required fields')
+        return
+      }
+
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        setError('Not authenticated')
+        return
+      }
+
+      const { data, error: err } = await supabase
+        .from('calendar_events')
+        .insert({
+          title: formData.title,
+          description: formData.description || null,
+          event_type: formData.event_type,
+          program_id: formData.program_id,
+          start_time: formData.start_time,
+          end_time: formData.end_time,
+          location_or_link: formData.location_or_link || null,
+          created_by: user.id,
+        })
+        .select()
+        .single()
+
+      if (err) throw err
+
+      setFormData({
+        title: '',
+        description: '',
+        event_type: 'class',
+        program_id: '',
+        start_time: '',
+        end_time: '',
+        location_or_link: '',
+      })
+      setShowForm(false)
+      fetchData()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create event')
+    }
+  }
+
   async function deleteEvent(id: string) {
     try {
       const supabase = createClient()
@@ -106,7 +164,7 @@ export default function AdminCalendarPage() {
           <h1 className="text-3xl font-bold text-foreground">Calendar Management</h1>
           <p className="mt-1 text-sm text-muted-foreground">Schedule and manage all events and live classes</p>
         </div>
-        <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+        <Button onClick={() => setShowForm(!showForm)} className="bg-primary text-primary-foreground hover:bg-primary/90">
           <Plus className="h-4 w-4 mr-2" /> Create Event
         </Button>
       </div>
@@ -115,6 +173,112 @@ export default function AdminCalendarPage() {
         <div className="rounded-lg bg-destructive/10 p-4 flex items-start gap-3">
           <AlertCircle className="h-5 w-5 text-destructive mt-0.5 flex-shrink-0" />
           <p className="text-sm text-destructive">{error}</p>
+        </div>
+      )}
+
+      {showForm && (
+        <div className="rounded-lg bg-card border border-border p-6">
+          <h2 className="text-lg font-semibold mb-4">Create New Event</h2>
+          <form onSubmit={createEvent} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Title *</label>
+                <input
+                  type="text"
+                  required
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
+                  placeholder="Event title"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Event Type *</label>
+                <select
+                  value={formData.event_type}
+                  onChange={(e) => setFormData({ ...formData, event_type: e.target.value })}
+                  className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
+                >
+                  <option value="class">Class</option>
+                  <option value="exam">Exam</option>
+                  <option value="deadline">Deadline</option>
+                  <option value="holiday">Holiday</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Program *</label>
+              <select
+                required
+                value={formData.program_id}
+                onChange={(e) => setFormData({ ...formData, program_id: e.target.value })}
+                className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
+              >
+                <option value="">Select a program</option>
+                {programs.map((prog) => (
+                  <option key={prog.id} value={prog.id}>
+                    {prog.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Description</label>
+              <textarea
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
+                placeholder="Event description"
+                rows={2}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Start Date & Time *</label>
+                <input
+                  type="datetime-local"
+                  required
+                  value={formData.start_time}
+                  onChange={(e) => setFormData({ ...formData, start_time: e.target.value })}
+                  className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">End Date & Time *</label>
+                <input
+                  type="datetime-local"
+                  required
+                  value={formData.end_time}
+                  onChange={(e) => setFormData({ ...formData, end_time: e.target.value })}
+                  className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Location or Link</label>
+              <input
+                type="text"
+                value={formData.location_or_link}
+                onChange={(e) => setFormData({ ...formData, location_or_link: e.target.value })}
+                className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
+                placeholder="Room number or meeting link"
+              />
+            </div>
+
+            <div className="flex gap-2">
+              <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                Create Event
+              </Button>
+              <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
+                Cancel
+              </Button>
+            </div>
+          </form>
         </div>
       )}
 
