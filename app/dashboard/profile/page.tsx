@@ -2,15 +2,19 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
 export default async function ProfilePage() {
-  const supabase = await createClient()
+  const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  const { data: profile } = await supabase
+  const { data: profile, error } = await supabase
     .from('profiles')
     .select('*')
     .eq('id', user.id)
     .single()
+  
+  if (error) {
+    console.error('Error fetching profile:', error)
+  }
 
   const role = profile?.is_admin ? 'Administrator' : 'Student'
 

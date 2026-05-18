@@ -13,12 +13,9 @@ interface LiveClass {
   description: string;
   program_id: string;
   scheduled_at: string;
-  meet_link: string;
+  meet_link?: string;
   is_active: boolean;
-  module_id?: string;
   programs: { title: string };
-  modules?: { title: string };
-  youtube_url?: string;
 }
 
 export default function LiveClassesPage() {
@@ -34,10 +31,8 @@ export default function LiveClassesPage() {
     title: '',
     description: '',
     program_id: '',
-    module_id: '',
     scheduled_at: '',
     meet_link: '',
-    youtube_url: '',
   });
 
   useEffect(() => {
@@ -112,11 +107,7 @@ export default function LiveClassesPage() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          ...payload,
-          module_id: formData.module_id || null,
-          youtube_url: formData.youtube_url || null,
-        }),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) throw new Error('Failed to save live class');
@@ -125,10 +116,8 @@ export default function LiveClassesPage() {
         title: '',
         description: '',
         program_id: '',
-        module_id: '',
         scheduled_at: '',
         meet_link: '',
-        youtube_url: '',
       });
       setEditingId(null);
       setShowForm(false);
@@ -164,10 +153,8 @@ export default function LiveClassesPage() {
       title: liveClass.title,
       description: liveClass.description || '',
       program_id: liveClass.program_id,
-      module_id: liveClass.module_id || '',
       scheduled_at: liveClass.scheduled_at.slice(0, 16),
       meet_link: liveClass.meet_link || '',
-      youtube_url: liveClass.youtube_url || '',
     });
     setShowForm(true);
   };
@@ -179,7 +166,7 @@ export default function LiveClassesPage() {
           <h1 className="text-3xl font-bold text-primary">Live Classes</h1>
           <p className="text-muted-foreground">Schedule and manage live classes for your programs</p>
         </div>
-        <Button onClick={() => { setShowForm(!showForm); setEditingId(null); setFormData({ title: '', description: '', program_id: '', scheduled_at: '', meet_link: '' }); }} className="gap-2">
+        <Button onClick={() => { setShowForm(!showForm); setEditingId(null); setFormData({ title: '', description: '', program_id: '', scheduled_at: '', meet_link: '' }); }} className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
           <Plus className="h-4 w-4" />
           New Live Class
         </Button>
@@ -227,25 +214,7 @@ export default function LiveClassesPage() {
               </select>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">Module/Topic *</label>
-              <select
-                required
-                value={formData.module_id}
-                onChange={(e) => setFormData({ ...formData, module_id: e.target.value })}
-                className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
-                disabled={!formData.program_id}
-              >
-                <option value="">Select a module/topic</option>
-                {modules
-                  .filter((module) => module.program_id === formData.program_id)
-                  .map((module) => (
-                    <option key={module.id} value={module.id}>
-                      {module.title}
-                    </option>
-                  ))}
-              </select>
-            </div>
+
 
             <div>
               <label className="block text-sm font-medium mb-1">Scheduled Date & Time *</label>
@@ -267,16 +236,7 @@ export default function LiveClassesPage() {
                 placeholder="https://meet.google.com/..."
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">YouTube Video URL</label>
-              <input
-                type="url"
-                value={formData.youtube_url}
-                onChange={(e) => setFormData({ ...formData, youtube_url: e.target.value })}
-                className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
-                placeholder="https://www.youtube.com/watch?v=..."
-              />
-            </div>
+
             <div className="flex gap-2">
               <Button type="submit" variant="default">
                 {editingId ? 'Update' : 'Create'} Live Class
@@ -315,25 +275,12 @@ export default function LiveClassesPage() {
                       <BookOpen className="h-4 w-4" />
                       {liveClass.programs?.title}
                     </span>
-                    {liveClass.modules?.title && (
-                      <span className="flex items-center gap-1">
-                        <Video className="h-4 w-4" />
-                        {liveClass.modules.title}
-                      </span>
-                    )}
                   </div>
-                  {(liveClass.meet_link || liveClass.youtube_url) && (
-                    <div className="mt-2 space-y-1">
-                      {liveClass.meet_link && (
-                        <a href={liveClass.meet_link} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline block">
-                          Google Meet Link
-                        </a>
-                      )}
-                      {liveClass.youtube_url && (
-                        <a href={liveClass.youtube_url} target="_blank" rel="noopener noreferrer" className="text-sm text-red-600 hover:underline block">
-                          YouTube Video Link
-                        </a>
-                      )}
+                  {liveClass.meet_link && (
+                    <div className="mt-2">
+                      <a href={liveClass.meet_link} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline block">
+                        Google Meet Link
+                      </a>
                     </div>
                   )}
                 </div>
