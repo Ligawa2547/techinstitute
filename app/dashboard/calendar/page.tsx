@@ -142,6 +142,15 @@ export default function CalendarPage() {
     return events.filter((e) => new Date(e.start_time).toDateString() === dateStr)
   }
 
+  const isToday = (day: number) => {
+    const today = new Date()
+    return (
+      day === today.getDate() &&
+      selectedMonth.getMonth() === today.getMonth() &&
+      selectedMonth.getFullYear() === today.getFullYear()
+    )
+  }
+
   const nextMonth = () => setSelectedMonth(new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() + 1))
   const prevMonth = () => setSelectedMonth(new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() - 1))
 
@@ -192,12 +201,20 @@ export default function CalendarPage() {
             ))}
             {daysArray.map((day) => {
               const dayEvents = getEventsForDay(day)
+              const today = isToday(day)
               return (
                 <div
                   key={day}
-                  className="h-24 rounded border border-border p-1 bg-card hover:bg-accent/5 cursor-pointer transition-colors"
+                  className={`h-24 rounded border p-1 cursor-pointer transition-colors ${
+                    today
+                      ? 'border-primary bg-primary/5 hover:bg-primary/10'
+                      : 'border-border bg-card hover:bg-accent/5'
+                  }`}
                 >
-                  <div className="text-xs font-semibold text-foreground mb-1">{day}</div>
+                  <div className={`text-xs font-semibold mb-1 ${today ? 'text-primary' : 'text-foreground'}`}>
+                    {day}
+                    {today && <span className="ml-1 inline-block h-2 w-2 rounded-full bg-primary"></span>}
+                  </div>
                   {dayEvents.length > 0 ? (
                     <div className="space-y-1">
                       {dayEvents.slice(0, 2).map((event) => (
