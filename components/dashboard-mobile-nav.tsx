@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Menu, X, LogOut, LayoutDashboard, BookOpen, Award, User } from 'lucide-react'
+import { Menu, X, LogOut, LayoutDashboard, BookOpen, Award, User, Calendar, Video, Bell, TrendingUp } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ThemeSelector } from '@/components/theme-selector'
@@ -9,6 +9,10 @@ import { ThemeSelector } from '@/components/theme-selector'
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { href: '/dashboard/programs', icon: BookOpen, label: 'My Programs' },
+  { href: '/dashboard/calendar', icon: Calendar, label: 'Calendar' },
+  { href: '/dashboard/live-lessons', icon: Video, label: 'Live Lessons' },
+  { href: '/dashboard/notifications', icon: Bell, label: 'Notifications' },
+  { href: '/dashboard/progress', icon: TrendingUp, label: 'My Progress' },
   { href: '/dashboard/certificates', icon: Award, label: 'Certificates' },
   { href: '/dashboard/profile', icon: User, label: 'Profile' },
 ]

@@ -1,13 +1,18 @@
 'use client'
 
 import { useState } from 'react'
-import { Menu, X, LogOut, ChevronRight, LayoutDashboard, BookOpen, Users, Award } from 'lucide-react'
+import { Menu, X, LogOut, ChevronRight, LayoutDashboard, BookOpen, Users, Award, Calendar, Video, Bell, BarChart3, FileText } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
 const navItems = [
   { href: '/admin', icon: LayoutDashboard, label: 'Overview' },
+  { href: '/admin/admissions', icon: FileText, label: 'Admissions' },
   { href: '/admin/programs', icon: BookOpen, label: 'Programs' },
+  { href: '/admin/calendar', icon: Calendar, label: 'Calendar' },
+  { href: '/admin/live-classes', icon: Video, label: 'Live Classes' },
+  { href: '/admin/notifications', icon: Bell, label: 'Notifications' },
+  { href: '/admin/progress', icon: BarChart3, label: 'Progress' },
   { href: '/admin/students', icon: Users, label: 'Students' },
   { href: '/admin/certificates', icon: Award, label: 'Certificates' },
 ]
