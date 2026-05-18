@@ -74,7 +74,7 @@ export default function AdminProgressPage() {
           program_id,
           completion_percentage,
           student_id,
-          students:student_id(full_name)
+          profiles!student_id(full_name)
         `)
 
       if (progressData) {
@@ -110,8 +110,8 @@ export default function AdminProgressPage() {
           total_lessons,
           student_id,
           program_id,
-          students:student_id(full_name),
-          programs:program_id(title)
+          profiles!student_id(full_name),
+          programs!program_id(title)
         `)
         .order('completion_percentage', { ascending: false })
         .limit(20)
@@ -119,7 +119,7 @@ export default function AdminProgressPage() {
       if (detailedProgress) {
         const formattedProgress = detailedProgress.map((item: any) => ({
           student_id: item.student_id,
-          student_name: item.students?.full_name || 'Unknown',
+          student_name: item.profiles?.full_name || 'Unknown',
           program_title: item.programs?.title || 'Unknown',
           completion_percentage: item.completion_percentage,
           lessons_completed: item.lessons_completed,
